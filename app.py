@@ -78,89 +78,84 @@ check_api_status()
 # 💰 CASH FLOW WATERFALL CHART FUNCTION
 # ----------------------------------------
 def create_cash_flow_waterfall(income, expenses, debt):
-    available = income - expenses - debt
+    data = [
+        {'Category': 'Income', 'Amount': income},
+        {'Category': 'Expenses', 'Amount': -expenses},
+        {'Category': 'Debt Payment', 'Amount': -debt},
+        {'Category': 'Available Cash', 'Amount': income - expenses - debt}
+    ]
 
-    measures = ["absolute", "relative", "relative", "total"]
-    y_values = [income, -expenses, -debt, available]
+    df = pd.DataFrame(data)
 
     fig = go.Figure(go.Waterfall(
-        name="Cash Flow",
-        orientation="v",
-        measure=measures,
-        x=["Income", "Expenses", "Debt Payment", "Available Cash"],
-        y=y_values,
-        text=[f"${income:,.0f}", f"-${expenses:,.0f}",
-              f"-${debt:,.0f}", f"${available:,.0f}"],
+        x=df['Category'],
+        y=df['Amount'],
         textposition="outside",
-        connector={"line": {"color": "rgba(97,84,164,0.4)"}},
-
-        increasing={"marker": {"color": "#00CC96"}},  # 🟩 Income
-        decreasing={"marker": {"color": "#EF553B"}},  # 🔴 Expenses & Debt
-        totals={"marker": {"color": "#6154a4" if available >= 0 else "#EF553B"}}
+        text=df['Amount'].apply(lambda x: f"${x:,.0f}"),
+        connector={"line": {"color": "#3b82f6"}},
+        increasing={"marker": {"color": "#3b82f6"}},
+        decreasing={"marker": {"color": "#1e3a8a"}},
+        totals={"marker": {"color": "#fde68a"}}
     ))
 
     fig.update_layout(
         title="💰 Monthly Cash Flow Overview",
-        title_font=dict(size=18, color="#4b3f72", family="Poppins"),
+        title_font=dict(size=18, color="#1e3a8a", family="Poppins"),
         yaxis_title="Amount ($)",
-        font=dict(size=13, family="Poppins"),
+        font=dict(size=13, family="Poppins", color="#1e3a8a"),
         height=400,
-        plot_bgcolor="#ffffff",
-        paper_bgcolor="#ffffff",
+        plot_bgcolor="#F0F8FF",
+        paper_bgcolor="#F0F8FF",
         margin=dict(l=40, r=40, t=60, b=40),
         showlegend=False
     )
-
     return fig
 
 # 💰 Emergency Fund Coverage Gauge with Dynamic Status
 def create_emergency_fund_gauge(emergency_months):
-    # ✅ Determine status and colors dynamically
     if emergency_months < 3:
-        status = "🟥 At Risk"
-        gauge_color = ["#ff6b6b", "#ffd93d"]
+        status = "🔴 At Risk"
+        gauge_color = ["#ef4444", "#fde68a"]
     elif 3 <= emergency_months < 6:
-        status = "🟨 Stable"
-        gauge_color = ["#ffd93d", "#6bcB77"]
+        status = "🟡 Stable"
+        gauge_color = ["#fde68a", "#10b981"]
     else:
-        status = "🟩 Secure"
-        gauge_color = ["#6bcB77", "#4b3f72"]
+        status = "🟢 Secure"
+        gauge_color = ["#10b981", "#60a5fa"]
 
-    # ✅ Create the gauge
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=emergency_months,
         title={
             'text': f"💰 Emergency Fund Coverage (months)<br><span style='font-size:18px'>{status}</span>",
-            'font': {'size': 18, 'color': '#4b3f72', 'family': 'Poppins'}
+            'font': {'size': 18, 'color': '#1e3a8a', 'family': 'Poppins'}
         },
         number={
-            'font': {'size': 50, 'color': '#4b3f72', 'family': 'Poppins'}
+            'font': {'size': 50, 'color': '#1e3a8a', 'family': 'Poppins'}
         },
         gauge={
             'axis': {
                 'range': [0, 6],
-                'tickfont': {'size': 12, 'color': '#4b3f72', 'family': 'Poppins'}
+                'tickfont': {'size': 12, 'color': '#1e3a8a', 'family': 'Poppins'}
             },
-            'bar': {'color': '#6154a4'},
+            'bar': {'color': '#1e3a8a'},
             'steps': [
                 {'range': [0, 3], 'color': gauge_color[0]},
                 {'range': [3, 6], 'color': gauge_color[1]}
             ],
             'threshold': {
-                'line': {'color': '#00C49A', 'width': 4},
+                'line': {'color': '#10b981', 'width': 4},
                 'thickness': 0.75,
                 'value': 4.5
             }
         }
     ))
 
-    # ✅ Layout styling (consistent with your dashboard theme)
     fig.update_layout(
         height=400,
-        font=dict(size=13, color="#4b3f72", family="Poppins"),
-        paper_bgcolor="#ffffff",
-        plot_bgcolor="#ffffff",
+        font=dict(size=13, color="#1e3a8a", family="Poppins"),
+        paper_bgcolor="#F0F8FF",
+        plot_bgcolor="#F0F8FF",
         margin=dict(l=40, r=40, t=60, b=40)
     )
 
