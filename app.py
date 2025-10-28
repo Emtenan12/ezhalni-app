@@ -172,10 +172,10 @@ st.sidebar.title("🧭 Navigation")
 st.sidebar.markdown("---")
 page = st.sidebar.radio(
     "Go to",
-    ["🏠 Home", "📈 Financial Input", "📊 Insights", "💡 Cluster", "🧠 Plan"]
+    ["🏠 Home", "📈 Financial Input", "📊 Insights", "💡 You vs others", "🧠 Plan"]
 )
 st.sidebar.markdown("---")
-st.sidebar.caption("Built with ❤️ by our team")
+st.sidebar.caption("Built with ❤️ by Ezhalni team")
 
 # ----------------------------------------
 # 🏠 HOME PAGE - IMPROVED DESIGN
@@ -318,96 +318,223 @@ if page == "🏠 Home":
 # 📈 FINANCIAL INPUT PAGE
 # ----------------------------------------
 elif page == "📈 Financial Input":
+    # Apply custom CSS for beautiful light blue theme
+    st.markdown("""
+        <style>
+        .stApp {
+            background-color: #F0F8FF;
+        }
+        
+        /* Button styling */
+        .stButton>button {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(30, 58, 138, 0.3);
+            transition: all 0.3s ease;
+        }
+        .stButton>button:hover {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            box-shadow: 0 6px 12px rgba(30, 58, 138, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        /* Headers */
+        h1 {
+            color: #1e3a8a !important;
+            font-weight: 700 !important;
+            padding: 1rem 0 !important;
+        }
+        h2, h3 {
+            color: #1e3a8a !important;
+            font-weight: 600 !important;
+        }
+        
+        /* Input fields */
+        .stNumberInput > div > div > input,
+        .stSlider > div > div > div > input {
+            border-radius: 8px;
+            border: 2px solid #3b82f6;
+        }
+        
+        /* Cards for inputs */
+        div[data-testid="stHorizontalBlock"] {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(30, 58, 138, 0.1);
+            margin-bottom: 1rem;
+        }
+        
+        /* Slider styling */
+        .stSlider {
+            padding: 1rem 0;
+        }
+        
+        /* Status messages */
+        .stAlert {
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        /* Labels */
+        label {
+            color: #1e3a8a !important;
+            font-weight: 500 !important;
+        }
+        
+        /* Result box */
+        .result-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+            margin: 2rem 0;
+            border-left: 6px solid;
+        }
+        
+        .status-healthy {
+            border-left-color: #10b981;
+        }
+        
+        .status-risk {
+            border-left-color: #ef4444;
+        }
+        
+        /* Confidence badge */
+        .confidence-badge {
+            display: inline-block;
+            background-color: #fde68a;
+            color: #1e3a8a;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
     st.title("📋 Enter Your Financial Details")
+    st.markdown("---")
 
-    col1, col2, col3 = st.columns(3)
+    # Input section with better layout
+    col1, col2 = st.columns(2)
+    
     with col1:
-        age = st.number_input("Age", min_value=18, max_value=100, step=1)
-        dependents = st.number_input("Dependents", min_value=0, max_value=10, step=1)
+        st.markdown("### 👤 Personal Information")
+        age = st.number_input("Age", min_value=18, max_value=100, value=28, step=1)
+        
+        st.markdown("### 💰 Income & Expenses")
+        income = st.number_input("Monthly Income ($)", min_value=0, value=6000, step=100)
+        expenses = st.number_input("Monthly Expenses ($)", min_value=0, value=2500, step=100)
+    
     with col2:
-        income = st.number_input("Monthly Income ($)", min_value=0, step=100)
-        expenses = st.number_input("Monthly Expenses ($)", min_value=0, step=100)
+        st.markdown("### 💳 Savings & Debt")
+        savings = st.number_input("Total Savings ($)", min_value=0, value=50000, step=500)
+        debt = st.number_input("Monthly Loan Payment ($)", min_value=0, value=0, step=50)
+
+    st.markdown("### 📊 Loan Details")
+    col3, col4 = st.columns(2)
+    
     with col3:
-        savings = st.number_input("Total Savings ($)", min_value=0, step=50)
-        debt = st.number_input("Monthly Loan Payment ($)", min_value=0, step=50)
+        interest_rate = st.slider("Loan Interest Rate (%)", 0.0, 20.0, 5.0, 0.1)
+    with col4:
+        loan_term = st.slider("Loan Term (months)", 6, 120, 0, 6)
 
-    interest_rate = st.slider("Loan Interest Rate (%)", 0.0, 20.0, 5.0, 0.1)
-    loan_term = st.slider("Loan Term (months)", 6, 120, 24, 6)
-
-    submitted = st.button("💡 Analyze My Financial Health")
+    st.markdown("---")
+    
+    # Center the button
+    col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
+    with col_btn2:
+        submitted = st.button("💡 Analyze My Financial Health")
 
     if submitted:
-        st.markdown("### 🔄 Analyzing your data... please wait")
+        with st.spinner("🔄 Analyzing your data... please wait"):
+            payload = {
+                "age": age,
+                "monthly_income_usd": income,
+                "monthly_expenses_usd": expenses,
+                "savings_usd": savings,
+                "monthly_emi_usd": debt,
+                "loan_interest_rate_pct": interest_rate,
+                "loan_term_months": loan_term
+            }
 
-        payload = {
-            "age": age,
-            "monthly_income_usd": income,
-            "monthly_expenses_usd": expenses,
-            "savings_usd": savings,
-            "monthly_emi_usd": debt,
-            "loan_interest_rate_pct": interest_rate,
-            "loan_term_months": loan_term
-        }
+            try:
+                response = requests.post(f"{API_URL}/predict", json=payload)
+                if response.status_code == 200:
+                    result = response.json()
+                    prediction = result.get('prediction', 'Unknown')
+                    confidence = round(result.get('confidence', 0) * 100, 1)
+                    model_source = result.get('source', 'N/A')
+                    
+                    # Display result in a beautiful card
+                    if prediction.lower() in ['at risk', 'atrisk', 'at_risk']:
+                        st.markdown(f"""
+                            <div class="result-box status-risk">
+                                <h2 style='color: #ef4444; margin: 0;'>🚨 Financial Status: At Risk</h2>
+                            </div>
+                        """, unsafe_allow_html=True)
+                    else:  # Healthy
+                        st.markdown(f"""
+                            <div class="result-box status-healthy">
+                                <h2 style='color: #10b981; margin: 0;'>✅ Financial Status: Healthy</h2>
+                            </div>
+                        """, unsafe_allow_html=True)
 
-        try:
-            response = requests.post(f"{API_URL}/predict", json=payload)
-            if response.status_code == 200:
-                result = response.json()
-
-                st.success(f"✅ Your Financial Status: **{result.get('prediction', 'Unknown')}**")
-                st.metric("Financial Score", f"{result.get('health_score', 0)} / 100")
-                st.caption(f"🤖 Confidence: {round(result.get('confidence', 0)*100, 1)}% (Model: {result.get('source', 'N/A')})")
-
-
-                # Save session data
-                st.session_state["last_result"] = result
-                st.session_state["last_input"] = payload
-            else:
-                st.error("⚠️ Could not connect to the prediction API.")
-        except Exception as e:
-            st.error(f"🚨 Error: {e}")
+                    # Save session data
+                    st.session_state["last_result"] = result
+                    st.session_state["last_input"] = payload
+                else:
+                    st.error("⚠️ Could not connect to the prediction API.")
+            except Exception as e:
+                st.error(f"🚨 Error: {e}")
 
 # ----------------------------------------
-# 📊 INSIGHTS PAGE
+# 📊 INSIGHTS PAGE (Updated Color Theme)
 # ----------------------------------------
 elif page == "📊 Insights":
 
-    # 🎨 Custom Page Styling (Light + Mauve tones)
+    # 🎨 Custom Page Styling (Blue Theme)
     st.markdown("""
         <style>
         /* 🌤️ Page background */
         [data-testid="stAppViewContainer"] {
-            background-color: #ffffff !important;
+            background-color: #F0F8FF !important;
         }
 
-        /* 💜 Sidebar */
+        /* 🩵 Sidebar */
         [data-testid="stSidebar"] {
-            background-color: #f5f3ff !important;
+            background-color: #F8FAFC !important;
         }
 
         /* ✨ KPI Cards */
         div[data-testid="metric-container"] {
-            background: linear-gradient(145deg, #f5f3ff, #ecebff);
+            background: linear-gradient(145deg, #F8FAFC, #E0F2FE);
             border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(97, 84, 164, 0.15);
-            border: 1px solid rgba(97, 84, 164, 0.1);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+            border: 1px solid rgba(30, 58, 138, 0.1);
             transition: all 0.25s ease;
         }
 
         div[data-testid="metric-container"]:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(97, 84, 164, 0.25);
+            box-shadow: 0 6px 20px rgba(30, 58, 138, 0.25);
         }
 
-        /* 🟣 Metric Cards Inner Styling */
+        /* 💙 Metric Cards Inner Styling */
         [data-testid="stMetricValue"] {
-            color: #1e1b4b !important;
+            color: #1e3a8a !important;
             font-weight: 700 !important;
             font-size: 24px !important;
         }
         [data-testid="stMetricLabel"] {
-            color: #6154a4 !important;
+            color: #3b82f6 !important;
             font-weight: 600 !important;
             font-size: 14px !important;
         }
@@ -415,64 +542,60 @@ elif page == "📊 Insights":
         /* 🔲 Card Wrapper */
         div[data-testid="stHorizontalBlock"] > div {
             background-color: #ffffff !important;
-            border: 2px solid #6154a4 !important;
+            border: 2px solid #1e3a8a !important;
             border-radius: 12px !important;
             padding: 20px !important;
-            box-shadow: 0 4px 10px rgba(97, 84, 164, 0.15) !important;
+            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.15) !important;
             transition: all 0.3s ease-in-out;
         }
 
         div[data-testid="stHorizontalBlock"] > div:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 18px rgba(97, 84, 164, 0.25) !important;
+            box-shadow: 0 8px 18px rgba(30, 58, 138, 0.25) !important;
         }
 
         div[data-testid="stHorizontalBlock"] {
             gap: 2rem !important;
         }
 
-        /* 💜 Text and Fonts */
+        /* 💙 Text and Fonts */
         html, body, [class*="css"] {
             font-family: "Poppins", sans-serif !important;
         }
         h1, h4, p, span {
-            color: #4b3f72 !important;
+            color: #1e3a8a !important;
         }
 
-        /* 🎨 Gradient for Section Titles ONLY (keeps emojis colored normally) */
+        /* 🎨 Gradient for Section Titles */
         h2, h3 {
             font-weight: 700 !important;
-            background: linear-gradient(90deg, #6154a4, #a89bd9);
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: inline-block;
         }
-        /* Keep emojis normal color beside gradient titles */
-        h2::first-letter, h3::first-letter {
-            -webkit-text-fill-color: initial !important;
-        }
 
         /* 📦 Section Box */
         .section-box {
-            background: #faf9ff;
+            background: #E0F2FE;
             border-radius: 15px;
             padding: 25px;
-            box-shadow: 0 4px 10px rgba(97, 84, 164, 0.1);
+            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.1);
             margin-bottom: 25px;
         }
         </style>
     """, unsafe_allow_html=True)
 
     # 🌟 Header
-    st.markdown("""
-        <h1 style='display:flex;align-items:center;gap:10px;color:#4b3f72;'>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="#6154a4" height="32" width="32" viewBox="0 0 24 24">
+    st.markdown(f"""
+        <h1 style='display:flex;align-items:center;gap:10px;color:#1e3a8a;'>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="#3b82f6" height="32" width="32" viewBox="0 0 24 24">
                 <path d="M3 17h2v-7H3v7zm4 0h2V7H7v10zm4 0h2v-4h-2v4zm4 0h2V4h-2v13zm4 0h2v-9h-2v9z"/>
             </svg>
             <b>Financial Insights Dashboard</b>
         </h1>
     """, unsafe_allow_html=True)
-    st.markdown("Gain a clear and visually balanced overview of your financial health 💜")
+    st.markdown("Gain a clear and visually balanced overview of your financial health 💙")
     st.markdown("---")
 
     # 🧠 Data Retrieval
@@ -520,18 +643,18 @@ elif page == "📊 Insights":
                 df, x="Category", y="Amount",
                 color="Category",
                 color_discrete_map={
-                    "Income": "#6154a4", "Expenses": "#8b7fd4",
-                    "Debt": "#a49ee0", "Savings": "#c3bff2"
+                    "Income": "#1e3a8a", "Expenses": "#3b82f6",
+                    "Debt": "#60a5fa", "Savings": "#fde68a"
                 },
                 title="Your Financial Composition"
             )
             fig1.update_layout(
-                title_font=dict(size=18, color="#4b3f72", family="Poppins"),
-                font=dict(size=13, family="Poppins", color="#4b3f72"),
+                title_font=dict(size=18, color="#1e3a8a", family="Poppins"),
+                font=dict(size=13, family="Poppins", color="#1e3a8a"),
                 yaxis_title="Amount ($)",
                 height=400,
-                plot_bgcolor="#ffffff",
-                paper_bgcolor="#ffffff",
+                plot_bgcolor="#F0F8FF",
+                paper_bgcolor="#F0F8FF",
                 margin=dict(l=40, r=40, t=60, b=40),
                 showlegend=True,
             )
@@ -552,16 +675,16 @@ elif page == "📊 Insights":
             fig2 = px.bar(
                 df_ratios, x="Metric", y="Value",
                 color="Value",
-                color_continuous_scale=["#c3bff2", "#8b7fd4", "#6154a4"],
+                color_continuous_scale=["#93c5fd", "#3b82f6", "#1e3a8a"],
                 title="📊 Financial Ratios Overview"
             )
             fig2.update_layout(
-                title_font=dict(size=18, color="#4b3f72", family="Poppins"),
-                font=dict(size=13, family="Poppins", color="#4b3f72"),
+                title_font=dict(size=18, color="#1e3a8a", family="Poppins"),
+                font=dict(size=13, family="Poppins", color="#1e3a8a"),
                 yaxis_title="Value",
                 height=400,
-                plot_bgcolor="#ffffff",
-                paper_bgcolor="#ffffff",
+                plot_bgcolor="#F0F8FF",
+                paper_bgcolor="#F0F8FF",
                 margin=dict(l=40, r=40, t=60, b=40),
                 coloraxis_showscale=False
             )
@@ -583,44 +706,190 @@ elif page == "📊 Insights":
         """)
 
 # ----------------------------------------
-# 💡 CLUSTER PAGE
+# 💡 YOU VS OTHERS PAGE
 # ----------------------------------------
-elif page == "💡 Cluster":
-    st.title("💡 Your Financial Cluster")
+elif page == "💡 You vs others":
+    # Apply custom CSS for beautiful light blue theme
+    st.markdown("""
+        <style>
+        .stApp {
+            background-color: #F0F8FF;
+        }
+        
+        /* Headers */
+        h1, h2, h3 {
+            color: #1e3a8a !important;
+            font-weight: 700 !important;
+        }
+        
+        /* Metric cards */
+        div[data-testid="stMetricValue"] {
+            color: #1e3a8a !important;
+            font-size: 1.8rem !important;
+            font-weight: 700 !important;
+        }
+        
+        div[data-testid="stMetricLabel"] {
+            color: #3b82f6 !important;
+            font-weight: 600 !important;
+        }
+        
+        /* Custom cards */
+        .info-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+            margin: 1rem 0;
+            border-left: 6px solid #3b82f6;
+        }
+        
+        .comparison-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+            margin: 1.5rem 0;
+        }
+        
+        .cluster-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+        
+        .status-healthy {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-risk {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        
+        /* Table styling */
+        .dataframe {
+            border-radius: 12px !important;
+            overflow: hidden !important;
+            box-shadow: 0 2px 8px rgba(30, 58, 138, 0.1) !important;
+        }
+        
+        .dataframe thead tr th {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%) !important;
+            color: white !important;
+            font-weight: 600 !important;
+            padding: 1rem !important;
+        }
+        
+        .dataframe tbody tr:nth-child(even) {
+            background-color: #f0f9ff !important;
+        }
+        
+        .dataframe tbody tr:hover {
+            background-color: #fde68a !important;
+            transition: all 0.3s ease;
+        }
+        
+        /* Metrics container */
+        .metrics-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+            margin: 1.5rem 0;
+        }
+        
+        /* Warning/Info boxes */
+        .stAlert {
+            border-radius: 12px;
+            border-left: 4px solid #fde68a;
+        }
+        
+        /* Comparison assessment badges */
+        .assessment-better {
+            color: #065f46;
+            font-weight: 600;
+        }
+        
+        .assessment-worse {
+            color: #991b1b;
+            font-weight: 600;
+        }
+        
+        .assessment-similar {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    st.title("👥 You vs Others")
+    st.markdown("### Compare your financial profile with similar users")
 
     if "last_input" not in st.session_state:
-        st.warning("Please analyze your data first from the 'Financial Input' page.")
+        st.warning("⚠️ Please analyze your data first from the '📈 Financial Input' page.")
     else:
         try:
-            response = requests.post(f"{API_URL}/cluster", json=st.session_state["last_input"])
+            with st.spinner("🔄 Loading your comparison data..."):
+                response = requests.post(f"{API_URL}/cluster", json=st.session_state["last_input"])
+                
             if response.status_code == 200:
                 cluster_info = response.json()
-                st.success("✅ Cluster analysis retrieved successfully!")
-
-                # 🎯 Basic Info
-                st.markdown(f"### 🏷️ **Cluster Name:** {cluster_info.get('cluster_name', 'N/A')}")
-                st.markdown(f"**Description:** {cluster_info.get('description', 'No description available')}")
-                st.markdown(f"**Health Status:** {cluster_info.get('health_status', 'N/A')}")
+                
+                # 🎯 Cluster Information Card
+                st.markdown('<div class="info-card">', unsafe_allow_html=True)
+                
+                cluster_name = cluster_info.get('cluster_name', 'N/A')
+                st.markdown(f'<div class="cluster-badge">🏷️ Your Group: {cluster_name}</div>', unsafe_allow_html=True)
+                
+                description = cluster_info.get('description', 'No description available')
+                st.markdown(f"**📝 Description:** {description}")
+                
+                health_status = cluster_info.get('health_status', 'N/A')
+                if 'healthy' in health_status.lower():
+                    st.markdown(f'<div class="status-badge status-healthy">💚 {health_status}</div>', unsafe_allow_html=True)
+                else:
+                    st.markdown(f'<div class="status-badge status-risk">⚠️ {health_status}</div>', unsafe_allow_html=True)
+                
+                st.markdown('</div>', unsafe_allow_html=True)
 
                 st.markdown("---")
 
                 # 📊 Comparison Section
                 comp = cluster_info.get("comparison", {})
-                st.subheader(f"📊 Comparison with Group: {comp.get('group_name', 'N/A')}")
-
+                group_name = comp.get('group_name', 'N/A')
+                
+                st.markdown('<div class="comparison-card">', unsafe_allow_html=True)
+                st.subheader(f"📊 How You Compare with {group_name}")
+                
                 comparison_data = {
-                    "Metric": ["Income", "Savings", "Debt"],
-                    "Yours": [
-                        comp.get("income", {}).get("yours", 0),
-                        comp.get("savings", {}).get("yours", 0),
-                        comp.get("debt", {}).get("yours", 0)
+                    "💰 Metric": ["Monthly Income", "Total Savings", "Monthly Debt"],
+                    "👤 You": [
+                        f"${comp.get('income', {}).get('yours', 0):,.0f}",
+                        f"${comp.get('savings', {}).get('yours', 0):,.0f}",
+                        f"${comp.get('debt', {}).get('yours', 0):,.0f}"
                     ],
-                    "Group Avg": [
-                        comp.get("income", {}).get("group_average", 0),
-                        comp.get("savings", {}).get("group_average", 0),
-                        comp.get("debt", {}).get("group_average", 0)
+                    "👥 Group Average": [
+                        f"${comp.get('income', {}).get('group_average', 0):,.0f}",
+                        f"${comp.get('savings', {}).get('group_average', 0):,.0f}",
+                        f"${comp.get('debt', {}).get('group_average', 0):,.0f}"
                     ],
-                    "Assessment": [
+                    "📈 Status": [
                         comp.get("income", {}).get("assessment", ""),
                         comp.get("savings", {}).get("assessment", ""),
                         comp.get("debt", {}).get("assessment", "")
@@ -628,30 +897,176 @@ elif page == "💡 Cluster":
                 }
 
                 df_comp = pd.DataFrame(comparison_data)
-                st.table(df_comp)
+                st.dataframe(df_comp, use_container_width=True, hide_index=True)
+                
+                st.markdown('</div>', unsafe_allow_html=True)
 
                 st.markdown("---")
 
                 # 💡 Characteristics Section
-                st.subheader("💡 Cluster Characteristics")
+                st.markdown('<div class="metrics-container">', unsafe_allow_html=True)
+                st.subheader("💡 Financial Profile Breakdown")
+                
                 ch = cluster_info.get("characteristics", {})
 
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.metric("Cash Flow", ch.get("cash_flow", "N/A"))
-                    st.metric("Emergency Fund", ch.get("emergency_fund", "N/A"))
+                    st.metric("💵 Cash Flow", ch.get("cash_flow", "N/A"), 
+                             help="Your monthly income minus expenses")
+                    st.metric("🚨 Emergency Fund", ch.get("emergency_fund", "N/A"),
+                             help="Savings relative to monthly expenses")
                 with col2:
-                    st.metric("Expense Ratio", ch.get("expense_ratio", "N/A"))
-                    st.metric("Debt Level", ch.get("debt_level", "N/A"))
+                    st.metric("📊 Expense Ratio", ch.get("expense_ratio", "N/A"),
+                             help="Percentage of income spent on expenses")
+                    st.metric("💳 Debt Level", ch.get("debt_level", "N/A"),
+                             help="Debt burden relative to income")
+                
+                st.markdown('</div>', unsafe_allow_html=True)
+                
+                # Success message at bottom
+                st.success("✅ Comparison analysis completed successfully!")
 
             else:
-                st.error("⚠️ Could not fetch cluster data.")
+                st.error("⚠️ Could not fetch cluster data from the server.")
         except Exception as e:
-            st.error(f"🚨 Error fetching cluster info: {e}")
+            st.error(f"🚨 Error fetching comparison data: {e}")
 # ----------------------------------------
-# 🧠 PLAN PAGE - COMPREHENSIVE VERSION
+# 🧠 PLAN PAGE - THEMED VERSION
 # ----------------------------------------
 elif page == "🧠 Plan":
+    # Custom CSS for theme
+    st.markdown("""
+    <style>
+        /* Main background */
+        .stApp {
+            background-color: #F0F8FF;
+        }
+        
+        /* Title styling */
+        h1 {
+            color: #1e3a8a !important;
+            font-weight: 700 !important;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #fde68a;
+        }
+        
+        /* Section headers */
+        h2, h3 {
+            color: #1e3a8a !important;
+            font-weight: 600 !important;
+        }
+        
+        /* Metric containers */
+        [data-testid="stMetricValue"] {
+            color: #1e3a8a !important;
+            font-weight: 700 !important;
+        }
+        
+        [data-testid="stMetricLabel"] {
+            color: #3b82f6 !important;
+            font-weight: 500 !important;
+        }
+        
+        /* Cards and expanders */
+        .streamlit-expanderHeader {
+            background-color: white !important;
+            border-left: 4px solid #3b82f6 !important;
+            border-radius: 5px !important;
+            padding: 10px !important;
+            box-shadow: 0 2px 4px rgba(30, 58, 138, 0.1) !important;
+        }
+        
+        /* Success boxes */
+        .stSuccess {
+            background-color: #f0fdf4 !important;
+            border-left: 4px solid #86efac !important;
+            color: #166534 !important;
+        }
+        
+        /* Warning boxes */
+        .stWarning {
+            background-color: #fef3c7 !important;
+            border-left: 4px solid #fde68a !important;
+            color: #92400e !important;
+        }
+        
+        /* Info boxes */
+        .stInfo {
+            background-color: #dbeafe !important;
+            border-left: 4px solid #3b82f6 !important;
+            color: #1e40af !important;
+        }
+        
+        /* Error boxes */
+        .stAlert {
+            background-color: #fee2e2 !important;
+            border-left: 4px solid #ef4444 !important;
+        }
+        
+        /* Buttons */
+        .stDownloadButton button {
+            background-color: #3b82f6 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 8px !important;
+            padding: 10px 24px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3) !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .stDownloadButton button:hover {
+            background-color: #1e3a8a !important;
+            box-shadow: 0 6px 8px rgba(30, 58, 138, 0.4) !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        /* Progress bar */
+        .stProgress > div > div {
+            background-color: #fde68a !important;
+        }
+        
+        /* Text area */
+        textarea {
+            background-color: white !important;
+            border: 2px solid #3b82f6 !important;
+            border-radius: 8px !important;
+            color: #1e3a8a !important;
+        }
+        
+        /* Dividers */
+        hr {
+            border-color: #3b82f6 !important;
+            opacity: 0.3 !important;
+        }
+        
+        /* Captions */
+        .caption {
+            color: #64748b !important;
+        }
+        
+        /* Custom card styling */
+        .custom-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(30, 58, 138, 0.1);
+            border-left: 5px solid #fde68a;
+            margin-bottom: 20px;
+        }
+        
+        /* Highlight box */
+        .highlight-box {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2);
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
     st.title("🧭 Personalized Financial Plan")
 
     # Check if data exists
@@ -687,8 +1102,6 @@ elif page == "🧠 Plan":
                     plan_data = response.json()
                     
                     if plan_data and isinstance(plan_data, dict):
-                        st.success("✅ Personalized Plan Generated Successfully!")
-
                         # ============================================================
                         # 📊 FINANCIAL SUMMARY
                         # ============================================================
@@ -710,7 +1123,12 @@ elif page == "🧠 Plan":
                         with col4:
                             st.metric("🎯 Action Items", summary.get("action_items", 0))
 
-                        st.markdown(f"**🎯 Top Priority:** {summary.get('top_priority', 'N/A')}")
+                        st.markdown(f"""
+                        <div class="custom-card">
+                            <strong style="color: #1e3a8a; font-size: 18px;">🎯 Top Priority:</strong> 
+                            <span style="color: #3b82f6; font-size: 16px;">{summary.get('top_priority', 'N/A')}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
 
                         st.markdown("---")
 
@@ -816,11 +1234,15 @@ elif page == "🧠 Plan":
                             fig = go.Figure(data=[go.Pie(
                                 labels=list(allocation.keys()),
                                 values=list(allocation.values()),
-                                hole=.3
+                                hole=.3,
+                                marker=dict(colors=['#1e3a8a', '#3b82f6', '#60a5fa', '#93c5fd', '#fde68a'])
                             )])
                             fig.update_layout(
                                 title="Recommended Asset Allocation",
-                                height=300
+                                height=300,
+                                paper_bgcolor='rgba(0,0,0,0)',
+                                plot_bgcolor='rgba(0,0,0,0)',
+                                font=dict(color='#1e3a8a')
                             )
                             st.plotly_chart(fig, use_container_width=True)
 
@@ -842,7 +1264,7 @@ elif page == "🧠 Plan":
                             
                             st.markdown("**Focus on reducing:**")
                             for category in expense_red.get('categories', []):
-                                st.write(f"• {category}")
+                                st.markdown(f"• {category}")
                             
                             st.markdown("---")
 
@@ -882,8 +1304,12 @@ elif page == "🧠 Plan":
                             )
 
                         st.markdown("---")
-                        st.caption(f"🕒 Plan generated at: {plan_data.get('generated_at', 'N/A')}")
-                        st.caption("✨ Generated by Ezhalni Financial Health AI")
+                        st.markdown(f"""
+                        <div style="text-align: center; color: #64748b; padding: 20px;">
+                            <p>🕒 Plan generated at: {plan_data.get('generated_at', 'N/A')}</p>
+                            <p style="color: #3b82f6; font-weight: 600;">✨ Generated by Ezhalni Financial Health AI</p>
+                        </div>
+                        """, unsafe_allow_html=True)
 
                     else:
                         st.warning("📋 No plan data returned from API.")
