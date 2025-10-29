@@ -436,7 +436,7 @@ elif page == "📈 Financial Input":
     col3, col4 = st.columns(2)
     
     with col3:
-        interest_rate = st.slider("Loan Interest Rate (%)", 0.0, 20.0, 5.0, 0.1)
+        interest_rate = st.slider("Loan Interest Rate (%)", 0.0, 20.0, 0.0, 0.1)
     with col4:
         loan_term = st.slider("Loan Term (months)", 6, 120, 0, 6)
 
