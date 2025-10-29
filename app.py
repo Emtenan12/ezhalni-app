@@ -873,18 +873,18 @@ elif page == "💡 You vs others":
                 st.subheader(f"📊 How You Compare with {group_name}")
                 
                 comparison_data = {
-                    "💰 Metric": ["Monthly Income", "Total Savings", "Monthly Debt"],
-                    "👤 You": [
-                        f"${comp.get('income', {}).get('yours', 0):,.0f}",
-                        f"${comp.get('savings', {}).get('yours', 0):,.0f}",
-                        f"${comp.get('debt', {}).get('yours', 0):,.0f}"
+                    "Metric": ["Income", "Savings", "Debt"],
+                    "Yours": [
+                        comp.get("income", {}).get("yours", 0),
+                        comp.get("savings", {}).get("yours", 0),
+                        comp.get("debt", {}).get("yours", 0)
                     ],
-                    "👥 Group Average": [
-                        f"${comp.get('income', {}).get('group_average', 0):,.0f}",
-                        f"${comp.get('savings', {}).get('group_average', 0):,.0f}",
-                        f"${comp.get('debt', {}).get('group_average', 0):,.0f}"
+                    "Group Avg": [
+                        comp.get("income", {}).get("group_average", 0),
+                        comp.get("savings", {}).get("group_average", 0),
+                        comp.get("debt", {}).get("group_average", 0)
                     ],
-                    "📈 Status": [
+                    "Assessment": [
                         comp.get("income", {}).get("assessment", ""),
                         comp.get("savings", {}).get("assessment", ""),
                         comp.get("debt", {}).get("assessment", "")
